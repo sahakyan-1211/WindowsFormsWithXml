@@ -10,10 +10,11 @@ namespace WinForms.Managers
     {
     class XmlManager
         {
-        private XmlDocument xDoc;
-        private string filePath = @"C:\Users\i3\source\repos\WindowsFormsWithXml\WindowsFormsWithXml\Source\employee.xml";
+        readonly string filePath = @"C:\Users\i3\source\repos\WinForms\WinForms\Data\employee.xml";
+        readonly XmlDocument xDoc = new XmlDocument ();
 
-        List<Employee> employees = new List<Employee> {
+
+        readonly List<Employee> employees = new List<Employee> {
                 new Employee ()
                     {
                     _id = Guid.NewGuid (),
@@ -32,23 +33,24 @@ namespace WinForms.Managers
                     }
                 };
 
+
+
         public XmlDocument CreateXmlFile ()
             {
+            xDoc.Load (filePath);
+
+
+
             for ( int i = 0; i < employees.Count; i++ )
                 {
-
-
-                xDoc.Load (filePath);
-
-                XmlElement rootElement = xDoc.CreateElement ("employees");
+                XmlElement xRoot = xDoc.DocumentElement;
+                // XmlElement rootElement = xDoc.CreateElement ("employees");
                 XmlElement employeeElem = xDoc.CreateElement ("employee");
-                XmlElement idElem = xDoc.CreateElement ("id");
-                XmlElement firstNameElem = xDoc.CreateElement ("firstName");
-                XmlElement lastNameElem = xDoc.CreateElement ("lastName");
-                XmlElement ageElem = xDoc.CreateElement ("age");
-                XmlElement emailElem = xDoc.CreateElement ("email");
-
-
+                XmlElement idElem = xDoc.CreateElement ("Id");
+                XmlElement firstNameElem = xDoc.CreateElement ("FirstName");
+                XmlElement lastNameElem = xDoc.CreateElement ("LastName");
+                XmlElement ageElem = xDoc.CreateElement ("Age");
+                XmlElement emailElem = xDoc.CreateElement ("Email");
 
                 XmlText idText = xDoc.CreateTextNode (employees [i]._id.ToString ());
                 idElem.AppendChild (idText);
@@ -67,16 +69,31 @@ namespace WinForms.Managers
                 employeeElem.AppendChild (ageElem);
                 employeeElem.AppendChild (emailElem);
 
-                var items = xDoc.GetElementsByTagName ("employee");
-                for ( int j = 0; j < items.Count; j++ )
-                    {
-                    rootElement.AppendChild (items [j]);
-                    }
 
-                xDoc.AppendChild (rootElement);
-                xDoc.Save (filePath);
+                /* var items = xDoc.GetElementsByTagName ("employee");
+                 for ( int j = 0; j < items.Count; j++ )
+                     {
+                     rootElement.AppendChild (items [j]);
+                     }*/
+                // rootElement.AppendChild (employeeElem);
+                xRoot.AppendChild (employeeElem);
                 }
+
+            //xDoc.AppendChild (rootElement);
+            xDoc.Save (filePath);
+            ;
+
             return xDoc;
+            }
+        public void DeleteChild ()
+            {
+
+            XmlElement xRoot = xDoc.DocumentElement;
+
+            XmlNode firstNode = xRoot.FirstChild;
+            xRoot.RemoveChild (firstNode);
+            xDoc.Save (filePath);
             }
         }
     }
+
